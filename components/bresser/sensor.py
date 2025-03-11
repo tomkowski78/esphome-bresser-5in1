@@ -20,14 +20,17 @@ from esphome.const import (
     UNIT_MILLIMETER,
 )
 
-bresser_ns = cg.esphome_ns.namespace("bresser")
-Bresser = bresser_ns.class_(
-    "Bresser", cg.PollingComponent 
-)
+#bresser_ns = cg.esphome_ns.namespace("bresser")
+#Bresser = bresser_ns.class_(
+#    "Bresser", cg.PollingComponent 
+#)
+
+from . import CONF_Bresser_ID, Bresser
 
 CONFIG_SCHEMA = cv.Schema(
         {
-            cv.GenerateID(): cv.declare_id(Bresser),
+            #cv.GenerateID(): cv.declare_id(Bresser),
+            cv.GenerateID(CONF_Bresser_ID): cv.use_id(Bresser),
             
             cv.Optional(CONF_TEMPERATURE): sensor.sensor_schema(
                 unit_of_measurement=UNIT_CELSIUS,
@@ -67,8 +70,10 @@ CONFIG_SCHEMA = cv.Schema(
     ).extend(cv.polling_component_schema("60s"))
 
 async def to_code(config):
-    var = cg.new_Pvariable(config[CONF_ID])
-    await cg.register_component(var, config)
+    #var = cg.new_Pvariable(config[CONF_ID])
+    #await cg.register_component(var, config)
+    
+    var = await cg.get_variable(config[CONF_Bresser_ID])
 
     if temperature_config := config.get(CONF_TEMPERATURE):
         sens = await sensor.new_sensor(temperature_config)

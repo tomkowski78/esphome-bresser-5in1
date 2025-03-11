@@ -34,7 +34,7 @@ Bresser = bresser_ns.class_(
     "Bresser", cg.PollingComponent 
 )
 
-
+CONF_Bresser_ID = "Bresser_id"
 
 CONFIG_SCHEMA = cv.Schema(
         {
@@ -51,8 +51,6 @@ async def to_code(config):
     var  = cg.new_Pvariable(config[CONF_ID])
     await cg.register_component(var, config)
 
-    #await sensor.register_sensor(var, config) 
-    #await sensor.my_to_code_sensor(var, config)
    
     pin = await cg.gpio_pin_expression(config[CONF_PIN_CS])
     cg.add(var.set_pin_cs(pin))
@@ -62,7 +60,5 @@ async def to_code(config):
     
     pin = await cg.gpio_pin_expression(config[CONF_PIN_GDO2])
     cg.add(var.set_pin_gdo2(pin))
-    
-#    var_adv = cg.new_Pvariable(config[CONF_INFO_COMP_ID])
-#    await cg.register_component(var_adv, {})
+   
 

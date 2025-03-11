@@ -65,7 +65,11 @@ static const char *TAG = "Bresser";
         ESP_LOGD(TAG, "setup");
 
 		//this->radio = new CC1101(new Module(PIN_CC1101_CS, PIN_CC1101_GDO0, RADIOLIB_NC, PIN_CC1101_GDO2));
-		this->radio = new CC1101(new Module(this->pin_CS_->get_pin(), this->pin_GDO0_->get_pin(), RADIOLIB_NC, this->pin_GDO2_->get_pin()));
+		uint32_t cs = this->pin_CS_->get_pin();
+		uint32_t g0 = this->pin_GDO0_->get_pin();
+		uint32_t g2 = this->pin_GDO2_->get_pin();
+        ESP_LOGD(TAG, "pins: [%d,%d,%d]", cs,g0,g2);
+		this->radio = new CC1101(new Module(cs, g0, RADIOLIB_NC, g2));
 
         int state = this->radio->begin(868.35, 8.22, 57.136417, 270.0, 10, 32);
         if (state == RADIOLIB_ERR_NONE) {

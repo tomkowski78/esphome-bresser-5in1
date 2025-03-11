@@ -62,7 +62,7 @@ static const char *TAG = "Bresser";
 
     
     void Bresser::setup() {
-        ESP_LOGD(TAG, "setup");
+        ESP_LOGD(TAG, "setup !!!");
 
 		//this->radio = new CC1101(new Module(PIN_CC1101_CS, PIN_CC1101_GDO0, RADIOLIB_NC, PIN_CC1101_GDO2));
 		uint32_t cs = this->pin_CS_->get_pin();

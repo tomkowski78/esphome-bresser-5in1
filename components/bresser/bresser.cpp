@@ -611,5 +611,5 @@ static const char *TAG = "Bresser";
     }
     #endif
 
-} //namespace 
-} //namespace 
+} //namespace
+} //namespace

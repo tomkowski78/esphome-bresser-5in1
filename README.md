@@ -1,6 +1,6 @@
 # esphome-bresser
 
-YAML definition examples
+## YAML definition examples
 
 ```yaml
 
@@ -37,6 +37,10 @@ sensor:
     rain:
       name: "Deszcz"
     update_interval: 10s
+```
+## Connection example
+
+```yaml
 
 #  ***********************  Podłączenie fizyczne modułów ****************************************
 #

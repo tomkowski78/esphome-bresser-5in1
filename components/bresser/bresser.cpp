@@ -231,7 +231,7 @@ static const char *TAG = "Bresser";
         // First 13 bytes need to match inverse of last 13 bytes
         for (unsigned col = 0; col < msgSize / 2; ++col) {
             if ((msg[col] ^ msg[col + 13]) != 0xff) {
-                ESP_LOGD(TAG,"%s: Parity wrong at %u\n", __func__, col);
+                ESP_LOGV(TAG,"%s: Parity wrong at %u\n", __func__, col);
                 return DECODE_PAR_ERR;
             }
         }
@@ -249,7 +249,7 @@ static const char *TAG = "Bresser";
         }
 
         if (bitsSet != expectedBitsSet) {
-        ESP_LOGD(TAG,"%s: Checksum wrong actual [%02X] != expected [%02X]\n", __func__, bitsSet, expectedBitsSet);
+        ESP_LOGV(TAG,"%s: Checksum wrong actual [%02X] != expected [%02X]\n", __func__, bitsSet, expectedBitsSet);
         return DECODE_CHK_ERR;
         }
 
@@ -360,7 +360,7 @@ static const char *TAG = "Bresser";
         int digest  = lfsr_digest16(&msg[2], 15, 0x8810, 0x5412);
         if (chkdgst != digest) {
             //decoder_logf(decoder, 2, __func__, "Digest check failed %04x vs %04x", chkdgst, digest);
-            ESP_LOGD(TAG,"Digest check failed - %02X vs %02X",chkdgst,digest);
+            ESP_LOGV(TAG,"Digest check failed - %02X vs %02X",chkdgst,digest);
     //        ESP_LOGD(TAG, chkdgst, HEX);
     //        ESP_LOGD(TAG,F(" vs "));
     //        ESP_LOGD(TAG,digest, HEX);
@@ -371,7 +371,7 @@ static const char *TAG = "Bresser";
         int sum    = add_bytes(&msg[2], 16); // msg[2] to msg[17]
         if ((sum & 0xff) != 0xff) {
             //decoder_logf(decoder, 2, __func__, "Checksum failed %04x vs %04x", chksum, sum);
-            ESP_LOGD(TAG,"Checksum failed -  %02X vs %02X",chksum,HEX);
+            ESP_LOGV(TAG,"Checksum failed -  %02X vs %02X",chksum,HEX);
     //        ESP_LOGD(TAG,chksum, HEX);
     //        ESP_LOGD(TAG,F(" vs "));
     //        ESP_LOGD(TAG,sum, HEX);
@@ -500,14 +500,14 @@ static const char *TAG = "Bresser";
             if (recvData[0] == 0xD4) {
                 #ifdef _DEBUG_MODE_
                     // print the data of the packet
-                    ESP_LOGD(TAG," Data:");
+                    ESP_LOGV(TAG," Data:");
                     printRawdata(recvData, sizeof(recvData));
     //                for(int i = 0 ; i < sizeof(recvData) ; i++) {
     //                    ESP_LOGD(TAG," %02X", recvData[i]);
     //                }
     //                ESP_LOGD(TAG,);
 
-                    ESP_LOGD(TAG," R [0x%02X] RSSI: %f LQI: %d\n", recvData[0], radio->getRSSI(), radio->getLQI());
+                    ESP_LOGV(TAG," R [0x%02X] RSSI: %f LQI: %d\n", recvData[0], radio->getRSSI(), radio->getLQI());
                 #endif
 
                 #ifdef _DEBUG_MODE_
@@ -517,7 +517,7 @@ static const char *TAG = "Bresser";
                 // Decode the information - skip the last sync byte we used to check the data is OK
                 #ifdef BRESSER_6_IN_1
                     decode_ok = (decodeBresser6In1Payload(&recvData[1], sizeof(recvData) - 1, &weatherData) == DECODE_OK);
-                    ESP_LOGD(TAG,"decode_ok: %d, temp_ok: %d, wind_ok: %d, rain_ok: %d\n",
+                    ESP_LOGV(TAG,"decode_ok: %d, temp_ok: %d, wind_ok: %d, rain_ok: %d\n",
                         decode_ok, weatherData.temp_ok, weatherData.wind_ok, weatherData.rain_ok);
                 #else
                     decode_ok = (decodeBresser5In1Payload(&recvData[1], sizeof(recvData) - 1, &weatherData) == DECODE_OK);
@@ -532,56 +532,56 @@ static const char *TAG = "Bresser";
                 
                 if (decode_ok) {
                     const float METERS_SEC_TO_MPH = 2.237;
-                    ESP_LOGD(TAG,"Id: [%8X] Battery: [%s] ",
+                    ESP_LOGV(TAG,"Id: [%8X] Battery: [%s] ",
                         weatherData.sensor_id,
                         weatherData.battery_ok ? "OK " : "Low");
                     #ifdef BRESSER_6_IN_1
-                        ESP_LOGD(TAG,"Ch: [%d] ", weatherData.chan);
+                        ESP_LOGV(TAG,"Ch: [%d] ", weatherData.chan);
                     #endif
                     if (weatherData.temp_ok) {
-                        ESP_LOGD(TAG,"Temp: [%3.1fC] Hum: [%3d%%] ",
+                        ESP_LOGV(TAG,"Temp: [%3.1fC] Hum: [%3d%%] ",
                             weatherData.temp_c,
                             weatherData.humidity);
                     } else {
-                        ESP_LOGD(TAG,"Temp: [---.-C] Hum: [---%] ");
+                        ESP_LOGV(TAG,"Temp: [---.-C] Hum: [---%] ");
                     }
                     if (weatherData.wind_ok) {
-                        ESP_LOGD(TAG,"Wind max: [%3.1fm/s] Wind avg: [%3.1fm/s] Wind dir: [%4.1fdeg] ",
+                        ESP_LOGV(TAG,"Wind max: [%3.1fm/s] Wind avg: [%3.1fm/s] Wind dir: [%4.1fdeg] ",
                             weatherData.wind_gust_meter_sec,
                             weatherData.wind_avg_meter_sec,
                             weatherData.wind_direction_deg);
                     } else {
-                        ESP_LOGD(TAG,"Wind max: [--.-m/s] Wind avg: [--.-m/s] ");
+                        ESP_LOGV(TAG,"Wind max: [--.-m/s] Wind avg: [--.-m/s] ");
                     }
                     if (weatherData.rain_ok) {
-                        ESP_LOGD(TAG,"Rain: [%6.1fmm] ",  
+                        ESP_LOGV(TAG,"Rain: [%6.1fmm] ",  
                             weatherData.rain_mm);
                     } else {
-                        ESP_LOGD(TAG,"Rain: [-----.-mm] "); 
+                        ESP_LOGV(TAG,"Rain: [-----.-mm] "); 
                     }
                     if (weatherData.moisture_ok) {
-                        ESP_LOGD(TAG,"Moisture: [%2d%%]",
+                        ESP_LOGV(TAG,"Moisture: [%2d%%]",
                             weatherData.moisture);
                     }
-                    ESP_LOGD(TAG,"\n");
+                    ESP_LOGV(TAG,"\n");
                     //printf("{\"sensor_type\": \"bresser-5-in-1\", \"sensor_id\": %d, \"battery\": \"%s\", \"temp_c\": %.1f, \"hum_pc\": %d, \"wind_gust_ms\": %.1f, \"wind_speed_ms\": %.1f, \"wind_dir\": %.1f, \"rain_mm\": %.1f}\n",
                     //       sensor_id, !battery_low ? "OK" : "Low",
                     //       temperature, humidity, wind_gust, wind_avg, wind_direction_deg, rain);
                 } // if (decode_ok)
                 else {
                     #ifdef _DEBUG_MODE_
-                        ESP_LOGD(TAG,"[CC1101] R [0x%02X] RSSI: %f LQI: %d\n", recvData[0], radio->getRSSI(), radio->getLQI());
+                        ESP_LOGV(TAG,"[CC1101] R [0x%02X] RSSI: %f LQI: %d\n", recvData[0], radio->getRSSI(), radio->getLQI());
                     #endif
                 }
             } // if (recvData[0] == 0xD4)
             else if (state == RADIOLIB_ERR_RX_TIMEOUT) {
                 #ifdef _DEBUG_MODE_
-                    ESP_LOGD(TAG,"T");
+                    ESP_LOGV(TAG,"T");
                 #endif
             } // if (state == RADIOLIB_ERR_RX_TIMEOUT)
             else {
                 // some other error occurred
-                ESP_LOGD(TAG,"[CC1101] Receive failed - failed, code %d\n", state);
+                ESP_LOGD(TAV,"[CC1101] Receive failed - failed, code %d\n", state);
             }
         } // if (state == RADIOLIB_ERR_NONE)
 
@@ -597,17 +597,17 @@ static const char *TAG = "Bresser";
         char s[120];
         uint8_t ii = 0;
         s[0] = 0;
-        ESP_LOGD(TAG,"Raw Data:");
+        ESP_LOGV(TAG,"Raw Data:");
         for (uint8_t p = 0 ; p < msgSize ; p++) {
             sprintf(s, "%s %02X",s,msg[p]);
             ii++;
             if (ii>40) {
-                ESP_LOGD(TAG, "%s", s);
+                ESP_LOGV(TAG, "%s", s);
                 ii = 0;
                 s[0] = 0;
             };        
         }
-        ESP_LOGD(TAG,"%s", s);
+        ESP_LOGV(TAG,"%s", s);
     }
     #endif
 

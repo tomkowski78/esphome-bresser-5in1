@@ -581,7 +581,7 @@ static const char *TAG = "Bresser";
             } // if (state == RADIOLIB_ERR_RX_TIMEOUT)
             else {
                 // some other error occurred
-                ESP_LOGD(TAV,"[CC1101] Receive failed - failed, code %d\n", state);
+                ESP_LOGV(TAG,"[CC1101] Receive failed - failed, code %d\n", state);
             }
         } // if (state == RADIOLIB_ERR_NONE)
 

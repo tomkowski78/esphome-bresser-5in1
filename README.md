@@ -1,5 +1,8 @@
 # esphome-bresser
 
+More info
+https://olekdata.pl/stacja-pogodowa-bresser5in1-wspolpraca-z-home-assistant/
+
 ## YAML definition examples
 
 ```yaml

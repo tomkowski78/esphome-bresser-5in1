@@ -7,7 +7,7 @@
 
 // Comment out BRESSER_6_IN_1 to use decodeBresser5In1Payload()
 // Uncomment   BRESSER_6_IN_1 to use decodeBresser6In1Payload()
-#define BRESSER_6_IN_1
+// #define BRESSER_6_IN_1
 
 // Print misc debug output
 #define _DEBUG_MODE_
